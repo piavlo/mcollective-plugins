@@ -39,8 +39,8 @@ item will be discovered. Regular expressions are supported.
 
 Example: node names containing 'blah'
 
-    $ mco rpc rpcutil ping --dm chef -I /blah/
+    $ mco rpc rpcutil ping --dm sensu -I /blah/
 
 Example: node 'foo.example.com', and node names containing 'blah':
 
-    $ mco rpc rpcutil ping --dm chef -I /blah/ -I foo.example.com
+    $ mco rpc rpcutil ping --dm sensu -I /blah/ -I foo.example.com

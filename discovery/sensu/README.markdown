@@ -41,6 +41,17 @@ Example: node names containing 'blah'
 
     $ mco rpc rpcutil ping --dm sensu -I /blah/
 
-Example: node 'foo.example.com', and node names containing 'blah':
+Example: node 'foo.example.com', and node names containing 'blah'
 
     $ mco rpc rpcutil ping --dm sensu -I /blah/ -I foo.example.com
+
+The `-C` option (class) limits discovered nodes by their Sensu client check subscriptions.
+When the -C option is specified multiple times, nodes matching any item will be discovered.
+
+Example: node names with mysql subscriptions
+
+    $ mco rpc rpcutil ping --dm sensu -C mysql
+
+Example: node names containing both 'blah' and mysql subscriptions
+
+    $ mco rpc rpcutil ping --dm sensu -I /blah/ -C mysql

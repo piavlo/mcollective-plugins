@@ -10,18 +10,41 @@ module MCollective
         port = config.pluginconf["discovery.sensu.port"] || 4567
         api = Hinoki.new(host, port, config.pluginconf["discovery.sensu.user"], config.pluginconf["discovery.sensu.password"])
         clients = api.clients.all.map { |node| node['name'] }
-        discovered = Set.new
+
+        identified = Set.new
         unless filter["identity"].empty?
           filter["identity"].each do |identity|
             if identity.match("^/")
               identity = Regexp.new(identity.gsub("\/", ""))
-              discovered.merge(clients.grep(identity))
+              identified.merge(clients.grep(identity))
             elsif clients.include?(identity)
-              discovered.add(identity)
+              identified.add(identity)
             end
           end
         else
-          discovered.merge(clients)
+          identified.merge(clients)
+        end
+
+        classified = Set.new
+        unless filter["cf_class"].empty?
+          api.clients.all.each do |node|
+            filter["cf_class"].each do |role|
+              if node['subscriptions'].include?(role)
+                classified.add(node['name'])
+                break
+              end
+            end
+          end
+        end
+
+        if not filter["identity"].empty? and not filter["cf_class"].empty?
+          discovered = identified.intersection(classified)
+        elsif not filter["identity"].empty?
+          discovered = identified
+        elsif not filter["cf_class"].empty?
+          discovered = classified
+        else
+          discovered = clients
         end
         discovered.to_a
       end

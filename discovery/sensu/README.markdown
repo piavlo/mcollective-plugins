@@ -2,7 +2,7 @@
 
 MCollective discovery plugin that uses Sensu API server as its data source.
 
-List all nodes on the server, or those matching a given search.
+List all clients found in the sensu api, or those matching a given search.
 
 # Installation
 
@@ -28,7 +28,7 @@ if no configuration is given it will connect to localhost:4567.
 Select the Sensu discovery plugin by including `--dm sensu` on your mco
 commandline.  By default, this will discover all Sensu clients.
 
-Example: 'mco ping' all nodes known to Sensu Api
+Example: 'mco rpc rpcutil ping' all nodes known to Sensu Api
 
     $ mco rpc rpcutil ping --dm sensu
 
@@ -55,3 +55,15 @@ Example: node names with mysql subscriptions
 Example: node names containing both 'blah' and mysql subscriptions
 
     $ mco rpc rpcutil ping --dm sensu -I /blah/ -C mysql
+
+
+The `-F` option (fact) limits discovered nodes by their Sensu client specific check status
+When the -F option is specified multiple times, nodes matching any item will be discovered.
+
+Example: node names whoose cpu_check is in WARNING status
+
+    $ mco rpc rpcutil ping --dm sensu -F cpu_check=WARNING
+
+Example: node names whoose cpu_check is in WARNING or CRITICAL status
+
+    $ mco rpc rpcutil ping --dm sensu -F cpu_check=WARNING -F cpu_check=CRITICAL
